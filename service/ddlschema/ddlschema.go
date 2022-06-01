@@ -76,7 +76,7 @@ func Alterddl(sql string) {
 			if li.Cmd_exe != 6 {
 				fmt.Println("exc add column|add index", dhost, dport)
 			} else {
-				fmt.Println("add tablename", dst, dot)
+				fmt.Println("add tablename", dhost, dport)
 			}
 		}
 
