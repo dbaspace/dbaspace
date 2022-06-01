@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
+	"github.com/syohex/go-texttable"
+		"log"
 
 	uuid "github.com/go.uuid"
 
@@ -30,7 +33,8 @@ func Taskddl(c *gin.Context) {
 		exe_type, _ := strconv.Atoi(c.PostForm("exe_type"))
 		db_type, _ := strconv.Atoi(c.PostForm("db_type"))
 		search_type, _ := strconv.Atoi(c.PostForm("search_type"))
-		sqltext := c.PostForm("sqltext")
+		sqlp := c.PostForm("sqltext")
+		sqltext := strings.Join(strings.Fields(sqlp), " ")
 		ddl := model.NewTbl_add_ddl_task(taskid, shost, sport, dbname, tablename, command_exe, cmd_exe, exe_type, cmd_idc, db_type, search_type, sqltext)
 		fmt.Println("add task info", taskid, shost, sport, dbname, tablename, command_exe, cmd_exe, exe_type, cmd_idc, db_type, search_type, sqltext)
 		res, err := dadd.Putddlschema(ddl)
@@ -43,5 +47,29 @@ func Taskddl(c *gin.Context) {
 			c.HTML(http.StatusOK, "index.html", gin.H{"code": "请重新提交"})
 		}
 
+	}
+}
+
+
+func GoinceptionChecksql(c *gin.Context){
+	if c.Request.Method == "GET" {
+		//c.JSON(200, gin.H{"code": "get"})
+		c.HTML(http.StatusOK, "taskddl.html", nil)
+	}else{
+		sqlp := c.PostForm("sqltext")
+		sqltext := strings.Join(strings.Fields(sqlp), " ")
+		rows,err:=dadd.InceptionCheckSQL(sqltext)
+		defer rows.Close()
+	    tbl := &texttable.TextTable{}
+		if err !=nil{
+			log.Fatal(err)
+			c.HTML(http.StatusInternalServerError,"500.html",gin.H{"err_msg":err})
+		}
+		for rows.Next(){
+			var order_id, affected_rows, stage, error_level, stage_status, error_message, sql, sequence, backup_dbname, execute_time, sqlsha1, backup_time []uint8
+			err = rows.Scan(&order_id, &stage, &error_level, &stage_status, &error_message, &sql, &affected_rows, &sequence, &backup_dbname, &execute_time, &sqlsha1, &backup_time)
+			tbl.AddRow(string(order_id), string(affected_rows), string(stage), string(error_level), string(stage_status), string(error_message), string(sql), string(sequence), string(backup_dbname), string(execute_time))
+		}
+		fmt.Println(tbl.Draw())
 	}
 }

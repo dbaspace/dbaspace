@@ -4,6 +4,7 @@ package service
 import (
 	"awesomeProject/db-monitorProject/dao"
 	"awesomeProject/db-monitorProject/model"
+	"database/sql"
 	"fmt"
 	"strings"
 )
@@ -53,4 +54,31 @@ func Alterddl(sql string) {
 	fmt.Println(tmpdata2)
 	tmpdata3 := strings.Split(tmpdata2, "add")
 	fmt.Println(tmpdata3)
+}
+
+var (
+	userName  string = "dlan"
+	password  string = "root123"
+	ipAddrees string = "172.16.0.38"
+	port      int    = 3318
+	dbName    string = "lepus"
+	charset   string = "utf8"
+)
+func InceptionCheckSQL(sqltext string)(rows *sql.Rows,err error){
+    conn,err:=dao.GoInception()
+	if err !=nil{
+		return
+	}
+	sqlexe := fmt.Sprintf(`/*--user=%s;--password=%s;--host=%s;--port=%d;--enable-check=1;*/
+    inception_magic_start;
+    %v
+    inception_magic_commit;`, userName, password, ipAddrees, port, sqltext)
+	rows,err=conn.Query(sqlexe)
+	if err !=nil{
+		return
+	}
+	return
+
+
+
 }
