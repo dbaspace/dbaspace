@@ -36,18 +36,12 @@ func NewTbl_add_ddl_task(taskid, shost string, sport int, dbname, tablename stri
 	}
 }
 
-type dblist struct {
-	Dbname    string
-	Tablename string
+type Dblist struct {
+	Dbname    string `json:"dbname" gorm:"dbname" form:"dbname"`
+	Tablename string `json:"tablename" gorm:"tablename" form:"tablename"`
 }
+
 type Tbl_dbinfo_ddllist struct {
 	C_host string `json:"c_host" gorm:"column:c_host" form:"c_host"`
 	C_port int    `json:"c_port" gorm:"column:c_port" form:"c_port"`
-}
-
-func NewDblist(dbname, tablename string) *dblist {
-	return &dblist{
-		Dbname:    dbname,
-		Tablename: tablename,
-	}
 }
