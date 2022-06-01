@@ -17,6 +17,7 @@ type Tbl_add_ddl_task struct {
 	Sqltext     string //输入执行的DDLsql
 
 }
+
 //taskid, shost, sport, dbname, tablename, command_exe, cmd_exe, exe_type, cmd_idc, db_type, search_type, sqltext
 func NewTbl_add_ddl_task(taskid, shost string, sport int, dbname, tablename string, command_exe, cmd_exe, exe_type, cmd_idc, db_type, search_type int, sqltext string) *Tbl_add_ddl_task {
 	return &Tbl_add_ddl_task{
@@ -38,6 +39,10 @@ func NewTbl_add_ddl_task(taskid, shost string, sport int, dbname, tablename stri
 type dblist struct {
 	Dbname    string
 	Tablename string
+}
+type Tbl_dbinfo_ddllist struct {
+	C_host string `json:"c_host" gorm:"column:c_host" form:"c_host"`
+	C_port int    `json:"c_port" gorm:"column:c_port" form:"c_port"`
 }
 
 func NewDblist(dbname, tablename string) *dblist {
