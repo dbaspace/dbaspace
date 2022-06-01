@@ -64,21 +64,22 @@ var (
 	dbName    string = "lepus"
 	charset   string = "utf8"
 )
-func InceptionCheckSQL(sqltext string)(rows *sql.Rows,err error){
-    conn,err:=dao.GoInception()
-	if err !=nil{
+
+func InceptionCheckSQL(sqltext string) (rows *sql.Rows, err error) {
+	conn, err := dao.GoInception()
+	if err != nil {
 		return
 	}
 	sqlexe := fmt.Sprintf(`/*--user=%s;--password=%s;--host=%s;--port=%d;--enable-check=1;*/
     inception_magic_start;
     %v
     inception_magic_commit;`, userName, password, ipAddrees, port, sqltext)
-	rows,err=conn.Query(sqlexe)
-	if err !=nil{
+//	fmt.Println(sqlexe)
+	rows, err = conn.Query(sqlexe)
+	if err != nil {
+		fmt.Println("exe auth failed", err)
 		return
 	}
 	return
-
-
 
 }

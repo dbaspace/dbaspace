@@ -24,6 +24,7 @@ func main() {
 	r.GET("/addtask.html", hpt.PutPtarchiver)
 	r.GET("/taskddl.html", rddl.Taskddl)
 	r.POST("/taskddl.html", rddl.Taskddl)
+	r.POST("/taskddl1.html", rddl.GoinceptionChecksql)
 	fmt.Println("start")
 	r.Run(":8000")
 }
