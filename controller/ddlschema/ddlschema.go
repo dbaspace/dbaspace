@@ -43,9 +43,9 @@ func Taskddl(c *gin.Context) {
 			c.HTML(http.StatusInternalServerError, "500.html", gin.H{"err_msg": err})
 		}
 		if res != 0 {
-			c.HTML(http.StatusOK, "index.html", gin.H{"code": "提交成功"})
+			c.HTML(http.StatusOK, "taskddl.html", gin.H{"code": "提交成功"})
 		} else {
-			c.HTML(http.StatusOK, "index.html", gin.H{"code": "请重新提交"})
+			c.HTML(http.StatusOK, "taskddl.html", gin.H{"code": "请重新提交"})
 		}
 
 	}
@@ -69,8 +69,7 @@ func GoinceptionChecksql(c *gin.Context) {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		tbl.SetHeader(cols[0], cols[1], cols[2], cols[3], cols[4], cols[5], cols[6], cols[7], cols[8], cols[9], cols[10], cols[11])
-
+		tbl.SetHeader("编号", cols[1], cols[2], cols[3], cols[4], cols[5], cols[6], cols[7], cols[8], cols[9], cols[10], cols[11])
 		for rows.Next() {
 			var order_id, affected_rows, stage, error_level, stage_status, error_message, sql, sequence, backup_dbname, execute_time, sqlsha1, backup_time []uint8
 			err = rows.Scan(&order_id, &stage, &error_level, &stage_status, &error_message, &sql, &affected_rows, &sequence, &backup_dbname, &execute_time, &sqlsha1, &backup_time)
@@ -80,7 +79,7 @@ func GoinceptionChecksql(c *gin.Context) {
 			tbl.AddRow(string(order_id), string(affected_rows), string(stage), string(error_level), string(stage_status), string(error_message), string(sql), string(sequence), string(backup_dbname), string(execute_time))
 			//fmt.Println(string(order_id), string(affected_rows), string(stage), string(error_level), string(stage_status), string(error_message), string(sql), string(sequence), string(backup_dbname), string(execute_time))
 		}
-	
+
 		//c.JSON(http.StatusOK, gin.H{"authdata": tbl.Draw()})
 		c.HTML(http.StatusOK, "taskddl.html", gin.H{"authdata": tbl.Draw()})
 	}

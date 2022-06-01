@@ -7,7 +7,7 @@ import (
 )
 
 func Insertddlschema(ddl *model.Tbl_add_ddl_task) (res int64, err error) {
-	if ddl == nil {
+	if ddl.Shost == "" || ddl.Sqltext == "" {
 		return
 	}
 	sqltext := strings.Join(strings.Fields(ddl.Sqltext), " ")
