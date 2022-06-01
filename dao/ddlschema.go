@@ -2,6 +2,8 @@ package dao
 
 import (
 	"awesomeProject/db-monitorProject/model"
+	"fmt"
+
 	//"fmt"
 	"strings"
 )
@@ -23,4 +25,14 @@ func Insertddlschema(ddl *model.Tbl_add_ddl_task) (res int64, err error) {
 
 	return
 
+}
+
+func GetDdlList() (ddl []*model.Tbl_add_ddl_task, err error) {
+	sqlstr := "select taskid,shost,sport,dbname,tablename,command_exe,cmd_exe,cmd_idc,db_type,search_type,sqltext from tbl_add_ddl_task where is_status=0 order by id asc"
+	err = Db.Select(&ddl, sqlstr)
+	if err != nil {
+		fmt.Println("select failed")
+		return
+	}
+	return
 }
