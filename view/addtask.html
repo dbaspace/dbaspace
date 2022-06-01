@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head> 
+<meta charset="utf-8"> 
+<title>DBASPACE</title> 
+</head>
+<body>
+
+<table  width=1350px border="0">
+<tr>
+<td colspan="5" style="background-color:#FFA500;">
+<h1>数据库归档</h1>
+</td>
+</tr>
+
+<tr>
+<td style="background-color:#FFD700;height:700px;width:300px;vertical-align:top;">
+<tb>菜单</tb><br>
+<button style="width:100px"><a href="index.html">任务详情</a></button><br>
+<button style="width:100px"><a href="addtask.html">任务提交</a></button><br>
+<button style="width:100px"><a href="log.html">任务日志</a></button><br>
+</td>
+
+<td style="background-color:#eeeeee;height:700px;width:100%;vertical-align:top;">
+<form method="post" action="addtask.html">
+    <div align="center">
+    <h1>归档工单</h1>
+    归档地址<input type="text" name="shost"></br> </br> 
+归档端口<input type="text" name="sport"></br></br> 
+归档库名<input type="text" name="sschname"></br></br> 
+归档表名<input type="text" name="stablename"></br></br> 
+归档类型<input type="radio" name="exdtype" value="1" checked="checked">删除
+       <input type="radio" name="exdtype" value="1" checked="checked">批量删除
+       <input type="radio" name="exdtype" value="2" checked="checked">归档</br></br> 
+存储地址<input type="text" name="dhost"></input></br></br> 
+存储端口<input type="text" name="dport"></input></br></br> 
+存储库名<input type="text" name="dschename"></input></br></br> 
+存储表名<input type="text" name="dtabname"></input></br></br> 
+归档存储<input type="text" name="is_store"></input></br></br> 
+
+
+
+分库分表<input type="radio" name="is_sharding" checked="checked">否
+       <input type="radio" name="is_sharding" checked="checked">是</br></br> 
+归档条件<input type="text" name="is_condition"></input></br></br> 
+
+是否定时<input type="radio" name="is_scheduled" checked="checked">否
+       <input type="radio" name="is_scheduled" checked="checked">是</br></br> 
+
+定时时间<input type="text" name="schedule_time"></input></br></br> 
+索引名<input type="text" name="is_idx"></input></br></br> 
+审核人<input type="text" name="approverby"></input></br></br> 
+<input type="submit" value="Submit">
+<button>重置</button>
+<button>刷新</button>
+{{.code}}
+</div>
+</form>
+</td>
+</tr>
