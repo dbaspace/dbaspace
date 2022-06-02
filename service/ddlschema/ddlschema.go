@@ -46,28 +46,45 @@ func Alterddl(sql string) {
 			sqltext := strings.Replace(li.Sqltext, "`", "", -1)
 			sqllist := strings.Split(sqltext, " ")
 			gg := []string{"truncate", "drop"}
-			for _,i :=range gg{
-                  if strings.Contains(i,strings.ToLower(sqllist[0])){
+			for _, i := range gg {
+				if strings.Contains(i, strings.ToLower(sqllist[0])) {
 					fmt.Println("危险命令，禁止操作.....")
-					  return
-				  }
+					return
+				}
 			}
 			tmp := strings.Join(sqllist[3:], " ")
 			fmt.Println(tmp)
 		}
+		var db_typename string
+		switch li.Db_type {
+			case 1:
+				db_typename = "shopcrm"
+			case 2:
+				db_typename = "neworder"
+			case 3:
+				db_typename = "pay"
+			case 4:
+				db_typename = "fms"
+			case 5:
+				db_typename = "supply"
+			default:
+				fmt.Println("not delc")
+			}
 		if li.Exe_type == 1 && li.Db_type != 6 {
 			var info []model.Tbl_dbinfo_ddllist
-			getli := "select c_host,c_portfrom tbl_dbinfo_ddllist where db_type=?"
+			getli := "select c_host,c_port from tbl_dbinfo_ddllist where db_type=?"
 			err := dao.Db.Select(&info, getli, li.Db_type)
 			if err != nil {
 				fmt.Println("get dblist failed", err)
 			}
 			fmt.Println(info)
 			for _, key := range info {
+				
 				dst := key.C_host
 				dot := key.C_port
 				if li.Cmd_exe != 6 {
 					fmt.Println("exc add column|add index", dst, dot)
+					AddTaskRun(dst, dot, li.Tablename, "sql", li.Dbname, db_typename, li.Cmd_exe, li.Command_exe, li.Cmd_idc)
 				} else {
 					fmt.Println("add tablename", dst, dot)
 				}
@@ -76,6 +93,7 @@ func Alterddl(sql string) {
 			dhost := li.Shost
 			dport := li.Sport
 			if li.Cmd_exe != 6 {
+				AddTaskRun(dhost, dport, li.Tablename, "sql", li.Dbname, db_typename, li.Cmd_exe, li.Command_exe, li.Cmd_idc)
 				fmt.Println("exc add column|add index", dhost, dport)
 			} else {
 				fmt.Println("add tablename", dhost, dport)
