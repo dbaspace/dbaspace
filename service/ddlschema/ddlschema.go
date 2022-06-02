@@ -46,9 +46,11 @@ func Alterddl(sql string) {
 			sqltext := strings.Replace(li.Sqltext, "`", "", -1)
 			sqllist := strings.Split(sqltext, " ")
 			gg := []string{"truncate", "drop"}
-			if res := in(strings.ToLower(sqllist[0]), gg); res {
-				fmt.Println("危险命令，禁止操作.....")
-				return
+			for _,i :=range gg{
+                  if strings.Contains(i,strings.ToLower(sqllist[0])){
+					fmt.Println("危险命令，禁止操作.....")
+					  return
+				  }
 			}
 			tmp := strings.Join(sqllist[3:], " ")
 			fmt.Println(tmp)

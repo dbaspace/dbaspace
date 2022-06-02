@@ -45,7 +45,4 @@ type Tbl_dbinfo_ddllist struct {
 	C_port int    `json:"c_port" gorm:"column:c_port" form:"c_port"`
 }
 
-type Tbl_dbinfo_ddllist struct {
-	C_host string `json:"c_host" gorm:"column:c_host" form:"c_host"`
-	C_port int    `json:"c_port" gorm:"column:c_port" form:"c_port"`
-}
+
