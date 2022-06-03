@@ -68,7 +68,7 @@ func Alterddl(sql string) {
 		case 5:
 			db_typename = "supply"
 		default:
-			fmt.Println("not delc")
+			fmt.Println("not declare")
 		}
 		if li.Exe_type == 1 && li.Db_type != 6 {
 			var info []model.Tbl_dbinfo_ddllist
@@ -130,8 +130,6 @@ func Alterddl(sql string) {
 	tmpdata3 := strings.Split(tmpdata2, "add")
 	fmt.Println(tmpdata3)
 }
-
-
 
 func InceptionCheckSQL(sqltext string) (rows *sql.Rows, err error) {
 	conn, err := dao.GoInception()
