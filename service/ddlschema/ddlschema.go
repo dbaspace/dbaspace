@@ -131,9 +131,7 @@ func Alterddl(sql string) {
 	fmt.Println(tmpdata3)
 }
 
-func in(s string, gg []string) {
-	panic("unimplemented")
-}
+
 
 func InceptionCheckSQL(sqltext string) (rows *sql.Rows, err error) {
 	conn, err := dao.GoInception()
