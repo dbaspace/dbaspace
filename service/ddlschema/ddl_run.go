@@ -88,8 +88,12 @@ func AddTaskRun(host string, port int, table, sql, dbname, db_typename string, c
 }
 
 func CreateTable(host string, port int, table, sql, dbname, db_typename string, cmd_exe, command_exe, cmd_idc int) {
+	status := "00"
+	start_time := time.Now().Format("2006-01-02 15:04:05")
 	dsconn, err := dao.ConDB("dlan", "root123", host, "mysql", "utf8", port)
 	if err != nil {
+		status = "01"
+		fmt.Println("conn desc db:::", err)
 		panic(err)
 	}
 	sqlstr := `SELECT table_schema,table_name FROM information_schema.tables  WHERE table_schema<>'mysql' AND table_schema<>'information_schema' AND table_schema<>'performance_schema' AND 
@@ -98,6 +102,7 @@ func CreateTable(host string, port int, table, sql, dbname, db_typename string, 
 
 	err = dsconn.Select(&dname, sqlstr, dbname[0])
 	if err != nil {
+		status = "02"
 		fmt.Println("get dbname failed:::", err)
 		return
 	}
@@ -105,11 +110,22 @@ func CreateTable(host string, port int, table, sql, dbname, db_typename string, 
 		tsc := fmt.Sprintf("use  ?;?", li.Dbname, sql[0])
 		ret, err := dsconn.Exec(tsc)
 		if err != nil {
+			status = "02"
 			fmt.Println("exec  create table failed::", err)
 		}
 		_, err = ret.RowsAffected()
 		if err != nil {
+			status = "03"
 			fmt.Println("create table failed:::", err)
+		}
+		status = "05"
+		//Tbl_osc_all_record
+		sqlr := "insert into tbl_osc_all_record(taskid,c_host,c_port,dbname,tablename,info,status,start_time,end_time)values(?,?,?,?,?,?,?,?)"
+		//dao.InsertServiceLog(sqlr, host, port, li.Dbname, li.Tablename, sql, status)
+		end_time := time.Now().Format("2006-01-02 15:04:05")
+		_, err := dao.Db.Exec(sqlr, host, port, li.Dbname, li.Tablename, sql, status, start_time, end_time)
+		if err != nil {
+			fmt.Println("record log failed:::::", err)
 		}
 	}
 }

@@ -45,4 +45,7 @@ type Tbl_dbinfo_ddllist struct {
 	C_port int    `json:"c_port" gorm:"column:c_port" form:"c_port"`
 }
 
-
+type Tbl_osc_all_record struct {
+	Tt     Tbl_add_ddl_task
+	Status string `json:"status" gorm:"column:status" form:"status" binding:"required"`
+}

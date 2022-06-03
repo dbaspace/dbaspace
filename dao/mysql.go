@@ -50,16 +50,33 @@ func ConDB(username, password, host, dbname, charset string, port int) (conn *sq
 	return
 }
 
-func GoInception()(conn *sql.DB,err error) {
+func GoInception() (conn *sql.DB, err error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/", "gouser", "go134", "172.16.0.11", 4000)
 	conn, err = sql.Open("mysql", dsn)
-	if err !=nil{
+	if err != nil {
 		panic(err)
 	}
-	err =conn.Ping()
-	if err !=nil{
+	err = conn.Ping()
+	if err != nil {
 		return
 	}
 	return
 
+}
+
+func InsertServiceLog(sqlstr string, args ...interface{}) (id int64, err error) {
+	ret, err := Db.Exec(sqlstr, args)
+	if err != nil {
+		fmt.Println("exec insert...", err)
+		return
+	}
+	id, err = ret.LastInsertId()
+	if err != nil {
+		fmt.Println("get insert value...", err)
+		return
+	}
+	if id != 0 {
+		return
+	}
+	return
 }
