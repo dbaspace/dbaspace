@@ -14,7 +14,7 @@ import (
 func AddTaskRun(host string, port int, table, sql, dbname, db_typename string, cmd_exe, command_exe, cmd_idc int) {
 	//username, password, host, dbname, charset string, port int
 	//获取目标端
-	dsconn, err := dao.ConDB("dlan", "root123", host, dbname, "utf8", port)
+	dsconn, err := dao.ConDB("dlan", "root123", host, "mysql", "utf8", port)
 	if err != nil {
 		panic(err)
 	}
@@ -70,7 +70,7 @@ func AddTaskRun(host string, port int, table, sql, dbname, db_typename string, c
 			}
 			end_time := time.Now().Format("2006-01-02 15:04:05")
 			sql_insert := "insert into db_osc_all(c_host,c_port,dbname,tablename,info,start_time,end_time)values(?,?,?,?,?,?,?)"
-			_, err = Db.Exec(sql_insert, host, port, ts, tb, sql[0], start_time, end_time)
+			_, err = dao.Db.Exec(sql_insert, host, port, ts, tb, sql[0], start_time, end_time)
 			if err != nil {
 				fmt.Println("exec log failed", err)
 			}
@@ -88,17 +88,28 @@ func AddTaskRun(host string, port int, table, sql, dbname, db_typename string, c
 }
 
 func CreateTable(host string, port int, table, sql, dbname, db_typename string, cmd_exe, command_exe, cmd_idc int) {
-	dsconn, err := dao.ConDB("dlan", "root123", host, dbname, "utf8", port)
+	dsconn, err := dao.ConDB("dlan", "root123", host, "mysql", "utf8", port)
 	if err != nil {
 		panic(err)
 	}
-	sqlstr := `SELECT table_schema FROM information_schema.tables  WHERE table_schema<>'mysql' AND table_schema<>'information_schema' AND table_schema<>'performance_schema' AND 
-			 table_schema<>'sys'  and table_schema like '?%' GROUP BY table_schema,table_name`
+	sqlstr := `SELECT table_schema,table_name FROM information_schema.tables  WHERE table_schema<>'mysql' AND table_schema<>'information_schema' AND table_schema<>'performance_schema' AND 
+			 table_schema<>'sys'  and table_schema like '?%' GROUP BY table_schema`
 	var dname []*model.Dblist
 
 	err = dsconn.Select(&dname, sqlstr, dbname[0])
 	if err != nil {
 		fmt.Println("get dbname failed:::", err)
 		return
+	}
+	for _, li := range dname {
+		tsc := fmt.Sprintf("use  ?;?", li.Dbname, sql[0])
+		ret, err := dsconn.Exec(tsc)
+		if err != nil {
+			fmt.Println("exec  create table failed::", err)
+		}
+		_, err = ret.RowsAffected()
+		if err != nil {
+			fmt.Println("create table failed:::", err)
+		}
 	}
 }

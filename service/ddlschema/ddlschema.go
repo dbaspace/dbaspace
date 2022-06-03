@@ -57,19 +57,19 @@ func Alterddl(sql string) {
 		}
 		var db_typename string
 		switch li.Db_type {
-			case 1:
-				db_typename = "shopcrm"
-			case 2:
-				db_typename = "neworder"
-			case 3:
-				db_typename = "pay"
-			case 4:
-				db_typename = "fms"
-			case 5:
-				db_typename = "supply"
-			default:
-				fmt.Println("not delc")
-			}
+		case 1:
+			db_typename = "shopcrm"
+		case 2:
+			db_typename = "neworder"
+		case 3:
+			db_typename = "pay"
+		case 4:
+			db_typename = "fms"
+		case 5:
+			db_typename = "supply"
+		default:
+			fmt.Println("not delc")
+		}
 		if li.Exe_type == 1 && li.Db_type != 6 {
 			var info []model.Tbl_dbinfo_ddllist
 			getli := "select c_host,c_port from tbl_dbinfo_ddllist where db_type=?"
@@ -79,7 +79,7 @@ func Alterddl(sql string) {
 			}
 			fmt.Println(info)
 			for _, key := range info {
-				
+
 				dst := key.C_host
 				dot := key.C_port
 				if li.Cmd_exe != 6 {
@@ -96,6 +96,7 @@ func Alterddl(sql string) {
 				AddTaskRun(dhost, dport, li.Tablename, "sql", li.Dbname, db_typename, li.Cmd_exe, li.Command_exe, li.Cmd_idc)
 				fmt.Println("exc add column|add index", dhost, dport)
 			} else {
+				CreateTable(dhost, dport, li.Tablename, "sql", li.Dbname, db_typename, li.Cmd_exe, li.Command_exe, li.Cmd_idc)
 				fmt.Println("add tablename", dhost, dport)
 			}
 		}
