@@ -36,11 +36,11 @@ func CharCheck(sc string, num int) int {
 
 func Alterddl(sql string) {
 	//工单审核通过提交后,处理流程：1获取未执行工单 2、根据输入的条件进行判断 执行对应的操作
+	//若分库分表的DDL提交一次即可，通过定义好的连接信息进行操作
 	getlist, err := dao.GetDdlList()
 	if err != nil {
 		return
 	}
-
 	for _, li := range getlist {
 		if li.Cmd_exe == 1 {
 			sqltext := strings.Replace(li.Sqltext, "`", "", -1)
@@ -52,24 +52,19 @@ func Alterddl(sql string) {
 					return
 				}
 			}
-			tmp := strings.Join(sqllist[3:], " ")
+			sql = strings.Join(sqllist[3:], " ")
 			fmt.Println(tmp)
 		}
+		//tbl_productlist
 		var db_typename string
-		switch li.Db_type {
-		case 1:
-			db_typename = "shopcrm"
-		case 2:
-			db_typename = "neworder"
-		case 3:
-			db_typename = "pay"
-		case 4:
-			db_typename = "fms"
-		case 5:
-			db_typename = "supply"
-		default:
-			fmt.Println("not declare")
+		var btype model.ProductList
+		err = dao.Db.Select(&btype, "select db_type,productname from tbl_productlist where db_type=?", li.Db_type)
+		if err != nil {
+			fmt.Println("get productname failed:::", err)
+			return
 		}
+		db_typename = btype.ProductName
+
 		if li.Exe_type == 1 && li.Db_type != 6 {
 			var info []model.Tbl_dbinfo_ddllist
 			getli := "select c_host,c_port from tbl_dbinfo_ddllist where db_type=?"
