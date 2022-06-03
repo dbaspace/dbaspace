@@ -160,14 +160,9 @@ func Schesql(sqlstr string, Taskid, Shost string, Sport int, Sschname, Stablenam
 	end_time := time.Now().Format("2006-01-02 15:04:05")
 	insql := "insert into tbl_dbarchiver_task_log(taskid,shost,sport,sschname,stablename,dhost,dport,dschename,dtabname,is_condition,is_state,is_store,exdtype,delete_count,insert_count,start_time,end_time)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
 	//res, err := dao.Db.Exec(insql, Taskid, Shost, Sport, Sschname, Stablename, Dhost, Dport, Dschename, Dtabname, Is_condition, is_state, 1, exdtype, del_count, del_count, start_time, end_time)
-	res, err := dao.InsertServiceLog(insql, Taskid, Shost, Sport, Sschname, Stablename, Dhost, Dport, Dschename, Dtabname, Is_condition, is_state, 1, exdtype, del_count, del_count, start_time, end_time)
+	_, err := dao.InsertServiceLog(insql, Taskid, Shost, Sport, Sschname, Stablename, Dhost, Dport, Dschename, Dtabname, Is_condition, is_state, 1, exdtype, del_count, del_count, start_time, end_time)
 	if err != nil {
 		fmt.Println("exec record log failed")
-		return
-	}
-	_, err = res.LastInsertId()
-	if err != nil {
-		fmt.Printf("记录日志失败[%v   %v    %v     %v]", Shost, Sport, Sschname, Stablename)
 		return
 	}
 	//return
@@ -226,15 +221,12 @@ func ptTaskSingle(Taskid, Shost string, Sport int, Sschname, Stablename, Dhost s
 		end_time := time.Now().Format("2006-01-02 15:04:05")
 		insql := "insert into tbl_dbarchiver_task_log(taskid,shost,sport,sschname,stablename,dhost,dport,dschename,dtabname,is_condition,is_state,is_store,exdtype,delete_count,insert_count,start_time,end_time)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
 		//res, err := dao.Db.Exec(insql, Taskid, Shost, Sport, Sschname, Stablename, Dhost, Dport, Dschename, Dtabname, Is_condition, is_state, 1, exdtype, del_count, del_count, start_time, end_time)
-		res, err := dao.InsertServiceLog(insql, Taskid, Shost, Sport, Sschname, Stablename, Dhost, Dport, Dschename, Dtabname, Is_condition, is_state, 1, exdtype, del_count, del_count, start_time, end_time)
+		_, err := dao.InsertServiceLog(insql, Taskid, Shost, Sport, Sschname, Stablename, Dhost, Dport, Dschename, Dtabname, Is_condition, is_state, 1, exdtype, del_count, del_count, start_time, end_time)
 		if err != nil {
 			fmt.Println("exec record log failed")
 			return
 		}
-		_, err = res.LastInsertId()
-		if err != nil {
-			return
-		}
+
 	}(&wg, &insert_count, &delete_count, &select_count, &is_state)
 	err = c.Start()
 	wg.Wait()

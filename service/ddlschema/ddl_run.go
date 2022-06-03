@@ -123,7 +123,7 @@ func CreateTable(host string, port int, table, sql, dbname, db_typename string, 
 		sqlr := "insert into tbl_osc_all_record(taskid,c_host,c_port,dbname,tablename,info,status,start_time,end_time)values(?,?,?,?,?,?,?,?)"
 		//dao.InsertServiceLog(sqlr, host, port, li.Dbname, li.Tablename, sql, status)
 		end_time := time.Now().Format("2006-01-02 15:04:05")
-		_, err := dao.Db.Exec(sqlr, host, port, li.Dbname, li.Tablename, sql, status, start_time, end_time)
+		_, err = dao.Db.Exec(sqlr, host, port, li.Dbname, li.Tablename, sql, status, start_time, end_time)
 		if err != nil {
 			fmt.Println("record log failed:::::", err)
 		}
