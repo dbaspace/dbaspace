@@ -70,7 +70,7 @@ func AddTaskRun(host string, port int, table, sql, dbname, db_typename string, c
 			}
 			end_time := time.Now().Format("2006-01-02 15:04:05")
 			sql_insert := "insert into db_osc_all(c_host,c_port,dbname,tablename,info,start_time,end_time)values(?,?,?,?,?,?,?)"
-			_, err = dao.Db.Exec(sql_insert, host, port, ts, tb, sql[0], start_time, end_time)
+			_, err = dao.InsertServiceLog(sql_insert, host, port, ts, tb, sql[0], start_time, end_time)
 			if err != nil {
 				fmt.Println("exec log failed", err)
 			}
@@ -82,6 +82,10 @@ func AddTaskRun(host string, port int, table, sql, dbname, db_typename string, c
 				fmt.Println("EXE ALTER FAILED::::", err)
 			}
 			//记录日志
+			_, err = dao.InsertServiceLog(sql_insert, host, port, ts, tb, sql[0], start_time, end_time)
+			if err != nil {
+				fmt.Println("exec log failed", err)
+			}
 
 		}
 	}
@@ -120,10 +124,9 @@ func CreateTable(host string, port int, table, sql, dbname, db_typename string, 
 		}
 		status = "05"
 		//Tbl_osc_all_record
-		sqlr := "insert into tbl_osc_all_record(taskid,c_host,c_port,dbname,tablename,info,status,start_time,end_time)values(?,?,?,?,?,?,?,?)"
-		//dao.InsertServiceLog(sqlr, host, port, li.Dbname, li.Tablename, sql, status)
 		end_time := time.Now().Format("2006-01-02 15:04:05")
-		_, err = dao.Db.Exec(sqlr, host, port, li.Dbname, li.Tablename, sql, status, start_time, end_time)
+		sqlr := "insert into tbl_osc_all_record(taskid,c_host,c_port,dbname,tablename,info,status,start_time,end_time)values(?,?,?,?,?,?,?,?)"
+		_, err = dao.InsertServiceLog(sqlr, host, port, li.Dbname, li.Tablename, sql, status)
 		if err != nil {
 			fmt.Println("record log failed:::::", err)
 		}
